@@ -1,0 +1,194 @@
+--1.query
+select c.countryname as count_name,co.continent as cont_name
+from countries c inner join continents co on c.continent= co.contid
+group by c.countryname,co.continent
+order by 2;
+
+--2.query
+select co.continent,count(c.countryname) as num_of_count
+from countries c
+join continents co on c.continent=co.contid
+group by co.continent
+order by 2;
+
+--3.query
+select c.countryname
+from countries c
+Left join car_makers cm
+on c.countryid=cm.country where cm.maker is null order by 1;
+
+--4.query
+select cm.maker,c.countryname,cm.country
+from car_makers cm
+join countries c on cm.country=c.countryid
+    and c.countryname='japan';
+
+--5.query
+select cm.maker,c.countryname,cm.country
+from car_makers cm
+join countries c on cm.country=c.countryid
+    and (c.countryname='france' or c.countryname='usa');
+
+--6.query
+select c.countryname as count_name,co.continent as cont_name,cm.maker
+from countries c inner join continents co on c.continent= co.contid
+join car_makers cm on cm.country=c.countryid and cm.maker='volvo';
+
+--7.query
+select md.modelid as model_id,cm.fullname as full_name
+from model_details md
+join car_makers cm on md.maker=cm.id and md.model='ford';
+
+
+--8.Query
+select count(md.model) as Car_models_by_Germany
+from model_details md
+join car_makers cm on md.maker=cm.id
+join countries c on cm.country=c.countryid 
+and c.countryname='germany';
+
+--9.Query
+select cm.fullname as Maker_details,md.model as Car_models
+from model_details md
+left join car_makers cm on md.maker=cm.id
+join countries c on cm.country=c.countryid and c.countryname='japan';
+
+--10.query
+--a.
+select cn.model,cm.maker as car_maker,c.countryname,co.continent,cd.mpg
+from car_details cd
+join car_names cn on cd.id=cn.id
+join model_details md on cn.model=md.model
+join car_makers cm on md.maker=cm.id
+join countries c on cm.country=c.countryid
+join continents co on c.continent=co.contid
+where 
+cd.mpg = (SELECT MAX(cd.mpg) FROM car_details cd)
+   OR cd.mpg = (SELECT MIN(cd.mpg) FROM car_details cd);
+--b.
+select cn.model,cm.maker as car_maker,c.countryname,co.continent,cd.cylinders
+from car_details cd
+join car_names cn on cd.id=cn.id
+join model_details md on cn.model=md.model
+join car_makers cm on md.maker=cm.id
+join countries c on cm.country=c.countryid
+join continents co on c.continent=co.contid
+where 
+cd.cylinders = (SELECT MAX(cd.cylinders) FROM car_details cd)
+   OR cd.cylinders = (SELECT MIN(cd.cylinders) FROM car_details cd);
+--c.
+select cn.model,cm.maker as car_maker,c.countryname,co.continent,cd.edispl
+from car_details cd
+join car_names cn on cd.id=cn.id
+join model_details md on cn.model=md.model
+join car_makers cm on md.maker=cm.id
+join countries c on cm.country=c.countryid
+join continents co on c.continent=co.contid
+where 
+cd.edispl = (SELECT MAX(cd.edispl) FROM car_details cd)
+   OR cd.edispl = (SELECT MIN(cd.edispl) FROM car_details cd);
+--d.
+select cn.model,cm.maker as car_maker,c.countryname,co.continent,cd.horsepower
+from car_details cd
+join car_names cn on cd.id=cn.id
+join model_details md on cn.model=md.model
+join car_makers cm on md.maker=cm.id
+join countries c on cm.country=c.countryid
+join continents co on c.continent=co.contid
+where 
+cd.horsepower = (SELECT MAX(cd.horsepower) FROM car_details cd)
+   OR cd.horsepower = (SELECT MIN(cd.horsepower) FROM car_details cd);
+--e.
+select cn.model,cm.maker as car_maker,c.countryname,co.continent,cd.weight
+from car_details cd
+join car_names cn on cd.id=cn.id
+join model_details md on cn.model=md.model
+join car_makers cm on md.maker=cm.id
+join countries c on cm.country=c.countryid
+join continents co on c.continent=co.contid
+where 
+cd.weight = (SELECT MAX(cd.weight) FROM car_details cd)
+   OR cd.weight = (SELECT MIN(cd.weight) FROM car_details cd);
+--f.
+select cn.model,cm.maker as car_maker,c.countryname,co.continent,cd.accel
+from car_details cd
+join car_names cn on cd.id=cn.id
+join model_details md on cn.model=md.model
+join car_makers cm on md.maker=cm.id
+join countries c on cm.country=c.countryid
+join continents co on c.continent=co.contid
+where 
+cd.accel = (SELECT MAX(cd.accel) FROM car_details cd)
+   OR cd.accel = (SELECT MIN(cd.accel) FROM car_details cd);
+
+--11.Query
+select cd.year, count(*) as car_count
+from car_details cd
+group by cd.year
+having count(*) = (
+select max(car_count)
+from (select count(*) as car_count
+from car_details
+group by year));
+
+--12.Query
+select cd.year, count(*) as car_count
+from car_details cd
+group by cd.year
+having count(*) = (
+select min(car_count)
+from (select count(*) as car_count
+from car_details
+group by year));
+
+--13.Query
+select year,
+min(mpg) as min_mpg,
+max(mpg) as max_mpg,
+avg(mpg) as avg_mpg,
+min(cylinders) as min_cylinders,
+max(cylinders) as max_cylinders,
+avg(cylinders) as avg_cylinders,
+min(edispl) as min_edispl,
+max(edispl) as max_edispl,
+avg(edispl) as avg_edispl,
+min(horsepower) as min_horsepower,
+max(horsepower) as max_horsepower,
+avg(horsepower) as avg_horsepower,
+min(weight) as min_weight,
+max(weight) as max_weight,
+avg(weight) as avg_weight,
+min(accel) as min_accel,
+max(accel) as max_accel,
+avg(accel) as avg_accel
+from car_details
+group by year
+order by year;
+
+--14.Query
+--a.
+select 
+    avg(horsepower) as mean_horsepower,
+    avg(weight) as mean_weight,
+    avg(accel) as mean_accel
+from car_details;
+--b.
+select 
+    median(horsepower) as median_horsepower,
+    median(weight) as median_weight,
+    median(accel) as median_accel
+from car_details;
+--c.
+select 
+    stddev(horsepower) as stddev_horsepower,
+    stddev(weight) as stddev_weight,
+    stddev(accel) as stddev_accel
+from car_details;
+--observations:
+--Weight and horsepower: Given the wide variety of vehicle types in the dataset, these variables probably show a lot of variation. The mean values may be skewed upward by the existence of outliers, such as very heavy or powerful cars.
+--Accel: Since cars usually fall within similar ranges of acceleration for practical usability, it may exhibit less fluctuation than weight and horsepower.
+
+--15.query
+--Not explained in the class
+
+
